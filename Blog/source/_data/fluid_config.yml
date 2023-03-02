@@ -394,7 +394,7 @@
       name: LiuKang
       introduce: '愿世界和平' # 支持 HTML
       icons: # 更多图标可从 https://hexo.fluid-dev.com/docs/icon/ 查找，class 代表图标的 css class
-        - { class: 'iconfont icon-github-fill', link: 'https://github.com/thread-liu', tip: 'GitHub' }
+        - { class: 'iconfont icon-github-fill', link: 'https://github.com/liukangcc', tip: 'GitHub' }
         - { class: 'iconfont icon-douban-fill', link: 'https://douban.com', tip: '豆瓣' }
         - { class: 'iconfont icon-wechat-fill', qrcode: '/img/favicon.png' }  # 添加 qrcode 后，点击不再跳转，而是悬浮二维码，需要指定 image
 
