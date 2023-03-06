@@ -259,7 +259,7 @@
         options: { theme: 'default' }  # 接口选项，具体可见：http://mermaid-js.github.io/mermaid/#/mermaidAPI
       comments:  # 评论
         enable: true  # 开启评论
-        type: valine  # 指定使用的评论模块  available: disqus | valine | gitalk | utterances | changyan | livere | remark42
+        type: utterances  # 指定使用的评论模块  available: disqus | valine | gitalk | utterances | changyan | livere | remark42
 
 
     #---------------------------
@@ -272,7 +272,7 @@
     # utterances
     # You can install utterances with https://utteranc.es/ and generate your configuration
     utterances:
-      repo:
+      repo: liukangcc/liukangcc.github.io
       issue_term: pathname
       label: utterances
       theme: github-light
