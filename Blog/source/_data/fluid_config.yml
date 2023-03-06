@@ -135,7 +135,7 @@
       menu:  # 可自行增减，key 用来关联 languages/*.yml，如不存在关联则显示 key 本身的值；icon 是 css class，可以省略；增加 name 可以强制显示指定名称
         - { key: 'home', link: '/', icon: 'iconfont icon-home-fill' }
         - { key: 'archive', link: '/archives/', icon: 'iconfont icon-archive-fill' }
-        - { key: 'category', link: '/categories/', icon: 'iconfont icon-category-fill' }
+        # - { key: 'category', link: '/categories/', icon: 'iconfont icon-category-fill' }
         # - { key: 'tag', link: '/tags/', icon: 'iconfont icon-tags-fill' }
         - { key: 'about', link: '/about/', icon: 'iconfont icon-user-fill' }
         - { key: 'links', link: '/links/', icon: 'iconfont icon-link-fill' }  # 友链页，把前面#去掉即可展示
@@ -309,8 +309,8 @@
     # 完整文档 https://valine.js.org/configuration.html
     # 注意：下列配置项中的 true/false 不要用引号括起来
     valine:
-      appid: dUeiwpjJwNXI0iwqTbhEQ6jm-gzGzoHsz # 从 LeanCloud 的应用中得到的 appId
-      appkey: KFl5OxsD8F5ocVOMKLEtcXp4 # 从 LeanCloud 的应用中得到的 APP Key
+      appid: # 从 LeanCloud 的应用中得到的 appId
+      appkey: # 从 LeanCloud 的应用中得到的 APP Key
       placeholder: 说点什么 # 评论框占位提示符
       path: window.location.pathname # 当前文章页路径，用于区分不同的文章页，以保证正确读取该文章页下的评论列表
       avatar: retro # Gravatar 头像展示方式
