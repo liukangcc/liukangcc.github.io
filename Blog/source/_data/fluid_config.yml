@@ -229,7 +229,7 @@
           source: "busuanzi"  # 统计数据来源，可选：busuanzi | leancloud，使用 leancloud 需要在 web_analytics 中设置 api 参数，使用 busuanzi 注意可能间歇抽风
           format: "{} 次"
       updated:  # 在文章开头显示文章更新时间，该时间默认是 md 文件更新时间，可通过 front-matter 中 `updated` 手动指定（和 date 一样格式）
-        enable: true
+        enable: false
         content: 本文最后更新于：  # 描述文字
         relative: true  # 是否使用相对时间表示，比如："3 天前"
       toc:  # 文章右侧目录
@@ -237,7 +237,7 @@
         headingSelector: h1,h2,h3,h4,h5,h6
         collapseDepth: 0  # 层级的折叠深度，0 是全部折叠，6 是全部不折叠
       copyright:  # 版权声明
-        enable: true
+        enable: false
         content: '本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！'
       prev_next:  # 文章底部上一篇下一篇功能
         enable: true
@@ -319,7 +319,7 @@
       lang: zh-CN # zh-CN | zh-TW | en | ja
       visitor: true # 阅读量统计
       highlight: true # 代码高亮
-      recordIP: false # 是否记录评论者IP
+      recordIP: true # 是否记录评论者IP
       serverURLs:  # REST API 服务器地址，国际版不填
       emojiCDN: true # 表情包CDN
     # 畅言
@@ -389,14 +389,14 @@
       banner_img: /img/Veil.jpg
       banner_img_height: 60  # available: 0 - 100
       banner_mask_alpha: 0.3  # available: 0 - 1.0
-      subtitle:  # 打字机内容
+      subtitle:  'What do you want to know about me?'# 打字机内容
       avatar: /img/avatar.png # 头像
       name: Keaun
       introduce: '愿世界和平' # 支持 HTML
       icons: # 更多图标可从 https://hexo.fluid-dev.com/docs/icon/ 查找，class 代表图标的 css class
         - { class: 'iconfont icon-github-fill', link: 'https://github.com/liukangcc', tip: 'GitHub' }
-        - { class: 'iconfont icon-douban-fill', link: 'https://douban.com', tip: '豆瓣' }
-        - { class: 'iconfont icon-wechat-fill', qrcode: '/img/favicon.png' }  # 添加 qrcode 后，点击不再跳转，而是悬浮二维码，需要指定 image
+        # - { class: 'iconfont icon-douban-fill', link: 'https://douban.com', tip: '豆瓣' }
+        # - { class: 'iconfont icon-wechat-fill', qrcode: '/img/favicon.png' }  # 添加 qrcode 后，点击不再跳转，而是悬浮二维码，需要指定 image
 
 
     #---------------------------
@@ -418,7 +418,7 @@
       banner_img: /img/Byte_Lights.jpg
       banner_img_height: 60  # available: 0 - 100
       banner_mask_alpha: 0.3  # available: 0 - 1.0
-      subtitle:  # 打字机内容
+      subtitle: 'There are more interesting links here~' # 打字机内容
       items:  # intro 与 image 可省略
         - {
           title: 'Fluid Docs',
