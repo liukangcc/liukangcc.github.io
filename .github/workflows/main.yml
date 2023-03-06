@@ -20,9 +20,9 @@ jobs:
       uses: actions/checkout@master
 
     - name: Setup Node.js 10.x
-      uses: actions/setup-node@master
+      uses: actions/checkout@v3
       with:
-        node-version: "10.x"
+        node-version: "16"
 
     - name: Setup Hexo Dependencies
       run: |
