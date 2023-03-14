@@ -28,7 +28,6 @@ jobs:
       run: |
         cd Blog
         npm install hexo-cli -g
-        hexo version
         npm install npm-upgrade -g
         npm-upgrade -g
         npm update -g
