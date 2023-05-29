@@ -1,0 +1,776 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Keaun">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="RT-Thread Studio QEMU Simulator IntroductionEmbedded software development depends on development boards, which can be simulated using virtual machines such as QEMU without a physical development board">
+<meta property="og:type" content="article">
+<meta property="og:title" content="qemu">
+<meta property="og:url" content="https://github.com/liukangcc/2021/01/06/rt-thread-qemu/index.html">
+<meta property="og:site_name" content="Keaun">
+<meta property="og:description" content="RT-Thread Studio QEMU Simulator IntroductionEmbedded software development depends on development boards, which can be simulated using virtual machines such as QEMU without a physical development board">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://github.com/img/qemu.png">
+<meta property="article:published_time" content="2021-01-06T23:53:19.000Z">
+<meta property="article:modified_time" content="2023-05-29T12:51:41.324Z">
+<meta property="article:author" content="Keaun">
+<meta property="article:tag" content="rt-thread">
+<meta property="article:tag" content="qemu">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://github.com/img/qemu.png">
+  
+  
+  
+  <title>qemu - Keaun</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"github.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"★","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Keaun</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Panes.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="qemu"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-01-06 23:53" pubdate>
+          2021年1月6日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          38 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">qemu</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="RT-Thread-Studio-QEMU-Simulator-Introduction"><a href="#RT-Thread-Studio-QEMU-Simulator-Introduction" class="headerlink" title="RT-Thread Studio QEMU Simulator Introduction"></a>RT-Thread Studio QEMU Simulator Introduction</h2><p>Embedded software development depends on development boards, which can be simulated using virtual machines such as QEMU without a physical development board. QEMU is a virtual machine that supports cross-platform virtualization and can virtual many development boards. To facilitate the development of embedded applications without a development board, RT-Thread Studio provides a QEMU emulation debugger. This article focuses on emulation using the RT-Thread Studio QEMU emulator on the Windows platform.</p>
+<h3 id="Create-Project"><a href="#Create-Project" class="headerlink" title="Create Project"></a>Create Project</h3><ol>
+<li>Click <strong>File</strong> button and create RT-Thread project:</li>
+</ol>
+<p><img src="/img/qemu/new_prj.png" srcset="/img/loading.gif" lazyload alt="new_prj"></p>
+<ol start="2">
+<li>Project configuration, as shown in the figure below, select QEMU in the <strong>Adapter</strong> configuration TAB and configure the appropriate emulator:</li>
+</ol>
+<p><img src="/img/qemu/create_prj.png" srcset="/img/loading.gif" lazyload alt="create_prj"></p>
+<ol start="3">
+<li>Click the <strong>Finish</strong> button, and a new QEMU project will be created in the workspace.</li>
+</ol>
+<h3 id="Switch-Debugger-to-QEMU"><a href="#Switch-Debugger-to-QEMU" class="headerlink" title="Switch Debugger to QEMU"></a>Switch Debugger to QEMU</h3><p>If the current project is an old project or the debugger you are currently selecting is a debugger other than QEMU and you want to use QEMU, click the drop-down box to the right of the Download button and select QEMU:</p>
+<p><img src="/img/qemu/switch_to_qemu.png" srcset="/img/loading.gif" lazyload alt="switch_to_qemu"></p>
+<p>If the current project has not configured QEMU, after selecting QEMU, the prompt of <strong>QEMU Hasn’t been Configured</strong> will pop up, click <strong>Yes</strong> to display the QEMU configuration interface, the detail configurations  will be described in the next section.</p>
+<p><img src="/img/qemu/qemu1.png" srcset="/img/loading.gif" lazyload alt="qemu1"></p>
+<h3 id="QEMU-Configuration"><a href="#QEMU-Configuration" class="headerlink" title="QEMU Configuration"></a>QEMU Configuration</h3><p>Click <strong>Open Debugging Configuration</strong> to jump to the QEMU configuration interface, and the parameters can be configured as follows:</p>
+<table>
+<thead>
+<tr>
+<th align="center">Parameter</th>
+<th align="center">command</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Emulator</td>
+<td align="center">-M</td>
+</tr>
+<tr>
+<td align="center">Cpu Quantity</td>
+<td align="center">-smp</td>
+</tr>
+<tr>
+<td align="center">SD Card Memory</td>
+<td align="center">-sd</td>
+</tr>
+<tr>
+<td align="center">Don’t open grapgic windows</td>
+<td align="center">-nographic</td>
+</tr>
+<tr>
+<td align="center">Use TAP for network</td>
+<td align="center">-net</td>
+</tr>
+<tr>
+<td align="center">Extra Commands</td>
+<td align="center">None</td>
+</tr>
+</tbody></table>
+<p>After filling in the form, click <strong>OK</strong> button to save configuration. The default configuration is as follows:</p>
+<p><img src="/img/qemu/dbg_cfg.png" srcset="/img/loading.gif" lazyload alt="dbg_cfg"></p>
+<h3 id="Simulation-Debugging"><a href="#Simulation-Debugging" class="headerlink" title="Simulation Debugging"></a>Simulation Debugging</h3><p>Under normal compilation conditions, the IDE will automatically start QEMU and open the serial port by clicking the mode button, and enter breakpoint debugging mode, where you can observe the output of each breakpoint step by step, or execute your own commands in the serial port.</p>
+<p><img src="/img/qemu/print.png" srcset="/img/loading.gif" lazyload alt="print"></p>
+<h2 id="QEMU-Serial-Debugging"><a href="#QEMU-Serial-Debugging" class="headerlink" title="QEMU Serial Debugging"></a>QEMU Serial Debugging</h2><p>RT-Thread supports FinSH module, and users can use command operations in command line mode. You can view all supported commands by typing ‘help’ at the debugging terminal or by pressing the TAB key. As shown in the figure below, the left is the command, and the right is the command description. The previous step showed you how to start QEMU, and this step shows you how to debug QEMU user programs in a serial port.</p>
+<p><img src="/img/qemu/shell.png" srcset="/img/loading.gif" lazyload alt="shell"></p>
+<h3 id="View-The-Current-Thread"><a href="#View-The-Current-Thread" class="headerlink" title="View The Current Thread"></a>View The Current Thread</h3><p>To view the current thread and information such as thread state and stack size, please enter the command <code>list_thread</code> :</p>
+<p><img src="/img/qemu/list_thread.png" srcset="/img/loading.gif" lazyload alt="list_thread"></p>
+<h3 id="Check-The-Timer-Status"><a href="#Check-The-Timer-Status" class="headerlink" title="Check The Timer Status"></a>Check The Timer Status</h3><p>Enter the command <code>list_timer</code>  to view the status of the timer :</p>
+<p><img src="/img/qemu/list_timer.png" srcset="/img/loading.gif" lazyload alt="list_timer"></p>
+<h3 id="Add-User-Commands"><a href="#Add-User-Commands" class="headerlink" title="Add User Commands"></a>Add User Commands</h3><ol>
+<li>Users can use <code>MSH_CMD_EXPORT</code> to export the command to MSH:</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">hello_sample</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> **argv)</span><br>&#123;<br>    <span class="hljs-keyword">if</span> (argc == <span class="hljs-number">1</span>)<br>    &#123;<br>    	rt_kprintf(<span class="hljs-string">&quot;hello, world!\n&quot;</span>);<br>    &#125;<br><br>    <span class="hljs-keyword">return</span> RT_EOK;<br>&#125;<br>MSH_CMD_EXPORT(hello_sample, hello world);<br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>After compilation, you can enter the custom command <code>hello_sample</code> at the terminal:</li>
+</ol>
+<p><img src="/img/qemu/hello_world.png" srcset="/img/loading.gif" lazyload alt="hello_world"></p>
+<h2 id="QEMU-Network-Communication"><a href="#QEMU-Network-Communication" class="headerlink" title="QEMU Network Communication"></a>QEMU Network Communication</h2><p>While the basics of QEMU are described above, here’s how to use the complex peripherals on QEMU. RT-Thread Studio QEMU supports network communication and enables QEMU to connect to the network by enabling LWIP.</p>
+<h3 id="Basic-Function"><a href="#Basic-Function" class="headerlink" title="Basic Function"></a>Basic Function</h3><ol>
+<li>Enable ETH; Click <strong>RT-Thread Settings</strong>, select <strong>Hardware</strong>, and select <strong>Enable Ethernet</strong> function:</li>
+</ol>
+<p><img src="/img/qemu/eth.png" srcset="/img/loading.gif" lazyload alt="eth"></p>
+<ol start="2">
+<li>Enable SAL; Select <strong>Components</strong> and Enable <strong>Socket Abstraction Layer</strong>:</li>
+</ol>
+<p><img src="/img/qemu/sal.png" srcset="/img/loading.gif" lazyload alt="sal"></p>
+<ol start="3">
+<li>Save Configuration; You can use the combined command <strong>Ctrl+Shift+S</strong>, or the following button to save the configuration:</li>
+</ol>
+<p><img src="/img/qemu/save.png" srcset="/img/loading.gif" lazyload alt="save"></p>
+<ol start="4">
+<li>Debugging; Click the <strong>compile</strong> button, and start debugging after the compilation is completed; Enter the <code>ifconfig</code> command in the terminal to query the IP address obtained by QEMU:</li>
+</ol>
+<p><img src="/img/qemu/ifconfig.png" srcset="/img/loading.gif" lazyload alt="ifconfig"></p>
+<h3 id="Advanced-Function"><a href="#Advanced-Function" class="headerlink" title="Advanced Function"></a>Advanced Function</h3><p>This section introduces the advanced function about ethernet of QEMU.</p>
+<h4 id="IoT-Packages"><a href="#IoT-Packages" class="headerlink" title="IoT Packages"></a>IoT Packages</h4><p>Thanks to RT-Thread’s rich software package, Studio users can quickly develop the application layer instead of focusing on the underlying adaptation. Below is an example of using a package on QEMU.</p>
+<ol>
+<li>Open <strong>RT-Thread Setting</strong> and open <strong>WebClient</strong> software package to enable <strong>WebClient GET&#x2F;POST samples</strong>:</li>
+</ol>
+<p><img src="/img/qemu/web_client.png" srcset="/img/loading.gif" lazyload alt="web_client"></p>
+<ol start="2">
+<li><p>Save configuration;</p>
+</li>
+<li><p>Compile and start debugging;Terminal input command <code>web_get_test</code>, <code>web_post_test</code> to test QEMU network functionality:</p>
+</li>
+</ol>
+<p><img src="/img/qemu/web_test.png" srcset="/img/loading.gif" lazyload alt="web_test"></p>
+<h4 id="Enable-TAP"><a href="#Enable-TAP" class="headerlink" title="Enable TAP"></a>Enable TAP</h4><p>The default QEMU configuration cannot use the ping command; Once TAP is on, QEMU can use the ping command.</p>
+<ol>
+<li>Install the <a target="_blank" rel="noopener" href="https://tap-windows.updatestar.com/">TAP</a> network card  by default all the way:</li>
+</ol>
+<p><img src="/img/qemu/tap_install.png" srcset="/img/loading.gif" lazyload alt="tap_install"></p>
+<ol start="2">
+<li>Configure TAP network card; Open the <strong>Network Connections</strong> to change the adapter settings and rename the installed virtual network card to <strong>tap</strong>, as shown below:</li>
+</ol>
+<p><img src="/img/qemu/tap_rename.png" srcset="/img/loading.gif" lazyload alt="tap_rename"></p>
+<ol start="3">
+<li>Right click on the current network connection that can access the Internet (Ethernet is used in this paper), open the attribute -&gt; share, select the home network connection as tap, and click ok to complete the setting, as shown in the figure below : (if there is only one network card, there is no need to pull down to select the network card, as long as the box is checked to allow sharing)</li>
+</ol>
+<p><img src="/img/qemu/tap_share.png" srcset="/img/loading.gif" lazyload alt="tap_share"></p>
+<ol start="4">
+<li>Configure QEMU; Add TAP configuration and save configuration:</li>
+</ol>
+<p><img src="/img/qemu/TAP_NAME.png" srcset="/img/loading.gif" lazyload alt="TAP_NAME"></p>
+<ol start="5">
+<li>Compile, start debugging, and ping test. Enter the command <code>ping www.rt-thread.io</code>:</li>
+</ol>
+<p><img src="/img/qemu/tap_ping.png" srcset="/img/loading.gif" lazyload alt="tap_ping"></p>
+<h2 id="In-The-End"><a href="#In-The-End" class="headerlink" title="In The End"></a>In The End</h2><p>If you have any questions about Studio, please post them on the <a target="_blank" rel="noopener" href="https://club.rt-thread.io/">forum</a> and Studio developers will be more than happy to answer them.</p>
+<p><a target="_blank" rel="noopener" href="https://www.rt-thread.io/download.html?download=Studio">RT-Thread | Download (rt-thread.io)</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/rt-thread/">#rt-thread</a>
+      
+        <a href="/tags/qemu/">#qemu</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>qemu</div>
+      <div>https://github.com/liukangcc/2021/01/06/rt-thread-qemu/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Keaun</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年1月6日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/09/01/rust%20%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%BC%80%E5%8F%91/" title="Rust代码 嵌入到 rt-thread">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Rust代码 嵌入到 rt-thread</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/12/09/rt-thread%20%E7%BA%BF%E7%A8%8B%E7%AE%A1%E7%90%86/" title="rt-thread 线程管理">
+                        <span class="hidden-mobile">rt-thread 线程管理</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'liukangcc/liukangcc.github.io');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
